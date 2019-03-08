@@ -1,0 +1,521 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+
+      "virtualNetworkNewOrExisting": {
+        "type": "string",
+        "defaultValue": "new",
+        "metadata": {
+          "description": "Determines whether or not a new virtual network should be provisioned."
+        }
+      },
+      "virtualNetworkResourceGroupName": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().name]",
+        "metadata": {
+          "description": "Name of the resource group for the existing virtual network"
+        }
+      },
+
+      "virtualNetworkName": {
+        "type": "string",
+        "defaultValue": "[concat('cluster-vnet_',uniqueString(resourceGroup().id))]"
+      },
+
+      "vnetAddressPrefix": {
+        "type":"string",
+        "defaultValue": "10.1.0.0/16"
+      },
+      "subnetAddressPrefix": {
+        "type":"string",
+        "defaultValue": "10.1.0.0/16"
+      },
+
+      "clusterVmSku": {
+        "type": "string",
+        "defaultValue": "Standard_D8s_v3",
+        "metadata": {
+          "description": "VM instance type for dynatrace cluster nodes (https://www.dynatrace.com/support/help/get-started/managed-introduction/what-are-the-hardware-and-operating-system-requirements/)"
+        }
+      },
+
+      "sizeOfDataDiskInGB": {
+        "type": "int",
+        "defaultValue": 2000,
+        "minValue": 0,
+        "metadata": {
+          "description": "Size (GB) for datadisk used for Dynatrace installation, long-term metrics store and elastic search"
+        }
+      },
+
+      "sizeOfTransactionDataDiskInGB": {
+        "type": "int",
+        "defaultValue": 200,
+        "metadata": {
+          "description": "Size (GB) for datadisk used for transaction store"
+        }
+      },
+
+      "totalNodeInstanceCount": 
+      {
+        "type": "int",
+        "defaultValue": 3,
+        "minValue": 3,
+        "maxValue": 24,
+        "metadata": {
+          "description": "Number of total cluster nodes (including master node)"
+        }
+      },
+     
+      "adminUsername": {
+        "type": "string",
+        "metadata": {
+          "description": "SSH username"
+        }
+      },
+      "adminPassword": {
+        "type": "securestring",
+        "minLength":15,
+        "metadata": {
+          "description": "SSH password"
+        }
+      },
+
+      "masterDNSPrefix":{
+        "type": "string",
+        "defaultValue": "dt-master",
+        "metadata": {
+          "description": "DNS prefix for the master node"
+        }
+      },
+
+      "nodeDNSPrefix":{
+        "type": "string",
+        "defaultValue": "dt-node",
+        "metadata": {
+          "description": "DNS prefix for the secondary node, which will be postfixed with the node-id"
+        }
+      },
+
+      "licenseKey": {
+        "type": "string",
+        "metadata": {
+          "description": "Your Dynatrace License Key"
+        }
+      },
+      
+      "initialEnvironmentName": {
+        "type": "string",
+        "defaultValue": "MyEnvironment",
+        "metadata": {
+          "description": "Name of your initial environment"
+        }
+      },
+      "initialEnvironmentAdminFirstname": {
+        "type": "string",
+        "metadata": {
+          "description": "Environment administrators first name"
+        }
+      },
+      "initialEnvironmentAdminLastname": {
+        "type": "string",
+        "metadata": {
+          "description": "Environment administrators last name"
+        }
+      },
+      "initialEnvironmentAdminEmail": {
+        "type": "string",
+        "metadata": {
+          "description": "Environment administrators e-mail address"
+        }
+      },
+      "initialEnvironmentAdminSecret": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Environment administrators login password"
+        }
+      },
+      "scriptHostUrlExtensions": {
+        "type": "string",
+        "defaultValue": "https://dt-webapp-1.azurewebsites.net/",
+        "metadata": {
+          "description": "Base uri where the custom script extension scripts are hosted"
+        }
+      },
+      "scriptHostUrlDiskMount": {
+        "type": "string",
+        "defaultValue": "https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/",
+        "metadata": {
+          "description": "Base uri where the custom script extension scripts are hosted to mount the data disks"
+        }
+      }
+    },
+
+    "variables": {
+      "nsgName": "cluster-nsg",
+      "vnetName": "[parameters('virtualNetworkName')]",
+      "subnetName": "cluster-subnet",
+
+      "vnetAddressPrefix": "10.1.0.0/16",
+      "subnetAddressPrefix": "10.1.0.0/16",
+
+      "availabilitySetName": "cluster-nodes",
+
+      "sizeOfDataDiskInGB": "[parameters('sizeOfDataDiskInGB')]",
+      "sizeOfSessionDataDiskInGB": "[parameters('sizeOfTransactionDataDiskInGB')]",
+      "nodeInstanceCount": "[sub(parameters('totalNodeInstanceCount'),1)]" ,
+
+      "masterName": "master",
+      "masterNicName": "master-nic",
+      "masterPublicIPAddressName":"master-public-ip",
+      "masterDnsLabelPrefix":"[parameters('masterDNSPrefix')]",
+      "masterExtensionName":"dynatrace-master-setup",
+      
+      "nodeName": "node",
+      "nodeNicName": "node-nic_",
+      "nodeDnsLabelPrefix":"[concat(parameters('nodeDNSPrefix'),'-')]",
+      "nodePublicIPAddressName":"node-public-ip_",
+      "nodeExtensionName":"dynatrace-node-setup_"
+      
+    },
+    
+    "resources": [
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "name": "[variables('nsgName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "securityRules": [
+            {
+              "name": "https_rule",
+              "properties": {
+                "description": "Allow https",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "443",
+                "sourceAddressPrefix": "Internet",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 250,
+                "direction": "Inbound"
+              }
+            },
+            {
+              "name": "OneAgent_rule",
+              "properties": {
+                "description": "Allow https",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "destinationPortRange": "8443",
+                "sourceAddressPrefix": "Internet",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 200,
+                "direction": "Inbound"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "condition": "[equals(parameters('virtualNetworkNewOrExisting'), 'new')]",
+        "type": "Microsoft.Network/virtualNetworks",
+        "name": "[variables('vnetName')]",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2016-12-01",
+        "dependsOn": [
+          "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]"
+        ],
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+                "[variables('vnetAddressPrefix')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('subnetName')]",
+              "properties": {
+                "addressPrefix": "[variables('subnetAddressPrefix')]",
+                "networkSecurityGroup": {
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgname'))]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2016-03-30",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('masterPublicIPAddressName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "publicIPAllocationMethod": "Dynamic",
+          "dnsSettings": {
+            "domainNameLabel": "[variables('masterDnsLabelPrefix')]"
+          }
+        }
+      },
+      {
+        "apiVersion": "2016-03-30",
+        "type": "Microsoft.Network/networkInterfaces",
+        "name": "[variables('masterNicName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/publicIPAddresses/', variables('masterPublicIPAddressName'))]",
+          "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('masterPublicIPAddressName'))]"
+                },
+                "subnet": {
+                  "id": "[concat(resourceId(parameters('virtualNetworkResourceGroupName'),'Microsoft.Network/virtualNetworks', variables('vnetName')), '/subnets/',variables('subnetName'))]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2016-03-30",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[concat(variables('nodePublicIPAddressName'),copyIndex())]",
+        "location": "[resourceGroup().location]",
+        "copy": {
+          "name": "nodePublicIPLoop",
+          "count": "[variables('nodeInstanceCount')]"
+        },
+        "properties": {
+          "publicIPAllocationMethod": "Dynamic",
+          "dnsSettings": {
+            "domainNameLabel": "[concat(variables('nodeDnsLabelPrefix'),add(mul(add(copyIndex(),1),2),1))]"
+          }
+        }
+      },
+      {
+        "apiVersion": "2016-03-30",
+        "type": "Microsoft.Network/networkInterfaces",
+        "name": "[concat(variables('nodeNicName'),copyIndex())]",
+        "location": "[resourceGroup().location]",
+        "copy": {
+            "name": "nodeNicLoop",
+            "count": "[variables('nodeInstanceCount')]"
+          },
+        "dependsOn": [
+          "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('nodePublicIPAddressName'),copyIndex()))]",
+          "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig2",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('nodePublicIPAddressName'),copyIndex()))]"
+                },
+                "subnet": {
+                  "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')), '/subnets/',variables('subnetName'))]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Microsoft.Compute/availabilitySets",
+        "name": "[variables('availabilitySetName')]",
+        "apiVersion": "2017-03-30",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "PlatformUpdateDomainCount": 2,
+          "PlatformFaultDomainCount": 2
+        },
+        "sku": {
+          "name": "Aligned"
+        }
+      },
+      {
+        "apiVersion": "2016-04-30-preview",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[variables('masterName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[variables('availabilitySetName')]",
+          "[concat('Microsoft.Network/networkInterfaces/', variables('masterNicName'))]"
+        ],
+        "properties": {
+          "availabilitySet": { 
+            "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('availabilitySetName'))]" 
+          },
+          "hardwareProfile": { 
+            "vmSize": "[parameters('clusterVmSku')]" 
+          },
+          
+          "osProfile": {
+            "computerName": "[variables('masterName')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "Canonical",
+              "offer": "UbuntuServer",
+              "sku": "16.04.0-LTS",
+              "version": "latest"
+            },
+            "osDisk": {
+              "caching": "ReadWrite",
+              "createOption": "FromImage"
+            },
+            "dataDisks": [
+              {
+                "diskSizeGB": "[variables('sizeOfDataDiskInGB')]",
+                  "lun": 0,
+                  "createOption": "Empty"
+              },
+              {
+                "diskSizeGB": "[variables('sizeOfSessionDataDiskInGB')]",
+                  "lun": 1,
+                  "createOption": "Empty"
+              }
+            ]
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('masterNicName'))]"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "name":"[concat(variables('masterName'), '/',variables('masterExtensionName'))]",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2015-06-15",
+        "dependsOn": [
+          "[concat('Microsoft.Compute/virtualMachines/', variables('masterName'))]"
+        ],
+        "tags": {
+          "displayName": "Dynatrace Managed Master"
+        },
+        "properties": {
+          "publisher": "Microsoft.Azure.Extensions",
+          "type": "CustomScript",
+          "typeHandlerVersion": "2.0",
+          "autoUpgradeMinorVersion": true,
+          "settings": {
+            "skipDos2Unix":false
+          },
+          "protectedSettings": {
+            "fileUris": ["[concat('parameters('scriptHostUrlDiskMount'),'prepare_vm_disks.sh')]", "concat('parameters('scriptHostUrlExtensions'),'prepare_vm_disks.sh", "https://dt-webapp-1.azurewebsites.net/installmanaged.sh')]"], 
+             "commandToExecute": "[concat('sh installmanaged.sh ', parameters('licenseKey'),' ',parameters('initialEnvironmentName'),' ',parameters('initialEnvironmentAdminFirstname'),' ',parameters('initialEnvironmentAdminLastname'),' ',parameters('initialEnvironmentAdminEmail'),' ',parameters('initialEnvironmentAdminSecret'),' 1 ',reference(variables('masterPublicIPAddressName')).dnsSettings.fqdn)]"
+          }
+        }
+      },
+      {
+        "apiVersion": "2016-04-30-preview",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[concat(variables('nodeName'), copyindex())]",
+        "copy": {
+          "name": "clusterNodeLoop",
+          "count": "[variables('nodeInstanceCount')]",
+          "mode": "Serial",
+          "batchSize":1
+        },
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "nodeNicLoop",
+          "[concat('Microsoft.Compute/virtualMachines/', variables('masterName'))]"
+        ],
+        "properties": {
+          "availabilitySet": { 
+            "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('availabilitySetName'))]" 
+          },
+          "hardwareProfile": { 
+            "vmSize": "[parameters('clusterVmSku')]" 
+          },
+          
+          "osProfile": {
+            "computerName":  "[concat(variables('nodeName'), copyindex())]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "Canonical",
+              "offer": "UbuntuServer",
+              "sku": "16.04.0-LTS",
+              "version": "latest"
+            },
+            "osDisk": {
+              "caching": "ReadWrite",
+              "createOption": "FromImage"
+            },
+            "dataDisks": [
+              {
+                "diskSizeGB": "[variables('sizeOfDataDiskInGB')]",
+                  "lun": 0,
+                  "createOption": "Empty"
+              },
+              {
+                "diskSizeGB": "[variables('sizeOfSessionDataDiskInGB')]",
+                  "lun": 1,
+                  "createOption": "Empty"
+              }
+            ]
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nodeNicName'),copyIndex()))]"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "name":"[concat(variables('nodeName'),copyIndex(),'/',variables('nodeExtensionName'),copyIndex())]",
+        "copy": {
+            "name": "clusterNodeExtensionLoop",
+            "count": "[variables('nodeInstanceCount')]",
+            "mode": "Serial",
+            "batchSize":1
+          },
+        "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/',variables('nodeName'),copyIndex())]"
+        ],
+        "location": "[resourceGroup().location]",
+        "tags": {
+          "displayName": "Dynatrace Managed Secondary Node"
+        },
+        "properties": {
+          "publisher": "Microsoft.Azure.Extensions",
+          "type": "CustomScript",
+          "typeHandlerVersion": "2.0",
+          "autoUpgradeMinorVersion": true,
+          "settings": {
+            "skipDos2Unix":false
+          },
+          "protectedSettings": {
+            "fileUris": ["[concat('parameters('scriptHostUrlDiskMount'),'prepare_vm_disks.sh')]", "concat('parameters('scriptHostUrlExtensions'),'installmanagednode.sh')]"], 
+            "commandToExecute": "[concat('sh installmanagednode.sh ', parameters('licenseKey'),' ',reference(variables('masterNicName')).ipConfigurations[0].properties.privateIPAddress, ' ',take(skip(split(reference(resourceId(resourceGroup().name,'Microsoft.Compute/virtualMachines/extensions',variables('masterName'),variables('masterExtensionName'))).instanceView.statuses[0].message,'\n'),2),1)[0],' ',parameters('initialEnvironmentAdminSecret'),' ',add(mul(add(copyIndex(),1),2),1),' ',reference(concat('Microsoft.Network/publicIPAddresses/',variables('nodePublicIPAddressName'),copyIndex())).dnsSettings.fqdn)]"
+          }          
+        }
+      }
+    ]
+  }
+  
