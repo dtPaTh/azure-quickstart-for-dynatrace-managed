@@ -6,6 +6,7 @@ seedAuthToken="$3"
 initialEnvironmentAdminSecret="$4"
 nodeId="$5"
 fqdn="$6"
+installerDownloadUrl="$7"
 
 LOGFILE='/tmp/install-managed-extension.log'
 log() {
@@ -19,7 +20,7 @@ log 'prepare datadisks'
 sudo bash prepare_vm_disks.sh 1>> $LOGFILE
 
 log 'download latest installer'
-wget https://opcsvc.ruxit.com/downloads/installer/latest -O /tmp/dt-mgd-install.sh 1>> $LOGFILE
+wget "$installerDownloadUrl" -O /tmp/dt-mgd-install.sh 1>> $LOGFILE
 
 log 'execute installer'
 sudo sh /tmp/dt-mgd-install.sh --install-silent --license "$managedLicenseKey" --seed-ip "$seedIp" --seed-auth "$seedAuthToken" --datastore-dir /datadisks/disk1/dynatrace --svr-datastore-dir /datadisks/disk2/dynatrace  1>> $LOGFILE

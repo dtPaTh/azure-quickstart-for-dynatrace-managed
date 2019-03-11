@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 managedLicenseKey="$1"
 initialEnvironmentName="$2"
 initialEnvironmentAdminFirstname="$3"
@@ -8,6 +9,7 @@ initialEnvironmentAdminEmail="$5"
 initialEnvironmentAdminSecret="$6"
 nodeId="$7"
 fqdn="$8"
+installerDownloadUrl="$9"
 
 LOGFILE='/tmp/install-managed-extension.log'
 log() {
@@ -18,10 +20,11 @@ log() {
 log "run installmanaged.sh"
 
 log 'prepare datadisks'
+
 sudo bash prepare_vm_disks.sh >> $LOGFILE
 
 log 'download latest installer'
-wget https://opcsvc.ruxit.com/downloads/installer/latest -O /tmp/dt-mgd-install.sh 1>> $LOGFILE
+wget "$installerDownloadUrl" -O /tmp/dt-mgd-install.sh 1>> $LOGFILE
 
 log 'execute installer'
 sudo sh /tmp/dt-mgd-install.sh --install-silent --license "$managedLicenseKey" --datastore-dir /datadisks/disk1/dynatrace --svr-datastore-dir /datadisks/disk2/dynatrace --initial-environment "$initialEnvironmentName" --initial-first-name "$initialEnvironmentAdminFirstname" --initial-last-name "$initialEnvironmentAdminLastname" --initial-email "$initialEnvironmentAdminEmail" --initial-pass "$initialEnvironmentAdminSecret"  1>> $LOGFILE

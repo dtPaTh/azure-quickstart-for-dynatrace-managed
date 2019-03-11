@@ -104,6 +104,12 @@
           "description": "Your Dynatrace License Key"
         }
       },
+      "installerDownloadUrl": {
+        "type": "string",
+        "metadata": {
+          "description": "Your intaller download url"
+        }
+      },
       
       "initialEnvironmentName": {
         "type": "string",
@@ -421,7 +427,7 @@
           "protectedSettings": {
             "fileUris": ["[concat(parameters('scriptHostUrlDiskMount'),'prepare_vm_disks.sh')]", 
                          "[concat(parameters('scriptHostUrlExtensions'),'installmanaged.sh')]"], 
-             "commandToExecute": "[concat('sh installmanaged.sh ', parameters('licenseKey'),' ',parameters('initialEnvironmentName'),' ',parameters('initialEnvironmentAdminFirstname'),' ',parameters('initialEnvironmentAdminLastname'),' ',parameters('initialEnvironmentAdminEmail'),' ',parameters('initialEnvironmentAdminSecret'),' 1 ',reference(variables('masterPublicIPAddressName')).dnsSettings.fqdn)]"
+             "commandToExecute": "[concat('sh installmanaged.sh ', parameters('licenseKey'),' ',parameters('initialEnvironmentName'),' ',parameters('initialEnvironmentAdminFirstname'),' ',parameters('initialEnvironmentAdminLastname'),' ',parameters('initialEnvironmentAdminEmail'),' ',parameters('initialEnvironmentAdminSecret'),' 1 ',reference(variables('masterPublicIPAddressName')).dnsSettings.fqdn,' ',parameters('installerDownloadUrl'))]"
           }
         }
       },
@@ -514,7 +520,7 @@
           "protectedSettings": {
             "fileUris": ["[concat(parameters('scriptHostUrlDiskMount'),'prepare_vm_disks.sh')]", 
                          "[concat(parameters('scriptHostUrlExtensions'),'installmanagednode.sh')]"], 
-            "commandToExecute": "[concat('sh installmanagednode.sh ', parameters('licenseKey'),' ',reference(variables('masterNicName')).ipConfigurations[0].properties.privateIPAddress, ' ',take(skip(split(reference(resourceId(resourceGroup().name,'Microsoft.Compute/virtualMachines/extensions',variables('masterName'),variables('masterExtensionName'))).instanceView.statuses[0].message,'\n'),2),1)[0],' ',parameters('initialEnvironmentAdminSecret'),' ',add(mul(add(copyIndex(),1),2),1),' ',reference(concat('Microsoft.Network/publicIPAddresses/',variables('nodePublicIPAddressName'),copyIndex())).dnsSettings.fqdn)]"
+            "commandToExecute": "[concat('sh installmanagednode.sh ', parameters('licenseKey'),' ',reference(variables('masterNicName')).ipConfigurations[0].properties.privateIPAddress, ' ',take(skip(split(reference(resourceId(resourceGroup().name,'Microsoft.Compute/virtualMachines/extensions',variables('masterName'),variables('masterExtensionName'))).instanceView.statuses[0].message,'\n'),2),1)[0],' ',parameters('initialEnvironmentAdminSecret'),' ',add(mul(add(copyIndex(),1),2),1),' ',reference(concat('Microsoft.Network/publicIPAddresses/',variables('nodePublicIPAddressName'),copyIndex())).dnsSettings.fqdn,' ',parameters('installerDownloadUrl'))]"
           }          
         }
       }

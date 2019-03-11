@@ -31,13 +31,11 @@
 
 - Consider separate data-disks for dynatrace and cassandra/elastic.
 
-- Data-disks are currently mounted with the external public script from quickstart samples (https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/prepare_vm_disks.sh) and should use it's own script (maybe just re-package)
+- Data-disks are currently mounted with the external public script from quickstart samples (https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/prepare_vm_disks.sh). (maybe just re-package - it's included in the custom scripts)
 
 - Scripts should be hosted on e.g. offical dynatrace blob-storage
 
 - Prevent download of the managed installer for every node from dynatrace (reducing download time)
-
-- Extend to provision ActiveGate. 
 
 - Reconfigure port for Oneagent to use the public IP-Address
 
