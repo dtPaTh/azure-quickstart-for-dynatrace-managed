@@ -187,6 +187,19 @@
     },
     
     "resources": [
+      { 
+        "apiVersion": "2018-02-01",
+        "name": "pid-877608b9-9ed9-42a6-8ab0-9ffc59b65e82", 
+        "type": "Microsoft.Resources/deployments",
+        "properties": {
+            "mode": "Incremental",
+            "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "resources": []
+            }
+        }
+      },
       {
         "apiVersion": "2015-06-15",
         "type": "Microsoft.Network/networkSecurityGroups",
