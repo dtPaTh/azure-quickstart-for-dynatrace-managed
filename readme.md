@@ -5,6 +5,10 @@
 - As we provide a public domain (<clusterid>.dynatrace-managed.com) to access the cluster after installation, all nodes provision with a public ip. 
 - Setup is done via custom script extensions. Master node passes the token to install the secondary nodes to StdOut, where it is than extracted and passed as parameter to secondary nodes custom script extension.
 
+## How-To use
+See how-to [edit and deploy the template in the Azure Portal](https://github.com/dtPaTh/azure-quickstart-for-dynatrace-managed/tree/develop) 
+
+
 ## Things to consider
 
 ### Cluster Installation
