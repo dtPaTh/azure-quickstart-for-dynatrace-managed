@@ -9,7 +9,7 @@
 See how-to [edit and deploy the template in the Azure Portal](https://github.com/dtPaTh/azure-quickstart-for-dynatrace-managed/tree/develop) 
 
 
-## Things to consider
+## Learnings
 
 ### Cluster Installation
 
@@ -21,30 +21,31 @@ See how-to [edit and deploy the template in the Azure Portal](https://github.com
 
 - Installation requires public IPs for all nodes so the domain service (https://<clusterid>.dynatrace-managed.com/ ) works.
 
-### ARM Learnings
+### ARM 
 
-- Configuring extensions under a VM..
+- Configuring extensions under a VM.
 
   - requires type "extension" since it inherts "Microsoft.Compute/virtualMachines/" from parent
 
   - Serial deployment doesn't work as expected, but it works when deploying as a resource on it's own.
 
-## Things to improve
 
-- Use nested template approach to re-use template for a single-node cluster for a multi-node cluster
+## Possible improvements
 
-- Consider separate data-disks for dynatrace and cassandra/elastic.
+- Consider using nested template approach to re-use template for a single-node cluster for a multi-node cluster. 
 
 - Data-disks are currently mounted with the external public script from quickstart samples (https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/prepare_vm_disks.sh). (maybe just re-package - it's included in the custom scripts)
 
-- Scripts should be hosted on e.g. offical dynatrace blob-storage
+    - Limited to 2TB disks as the command fdisk is used. (Alternatives see here: https://www.tecmint.com/add-disk-larger-than-2tb-to-an-existing-linux/)
 
-- Prevent download of the managed installer for every node from dynatrace (reducing download time)
+- Scripts should be hosted on e.g. offical public storage, so customer can directly use the template
 
 - Reconfigure port for Oneagent to use the public IP-Address
 
 - Option to use either password or certificate for accessing the nodes
 
-## Open Questions
-- Data-disk cache settings
+### Open Questions
+- Best Data-disk cache settings
+
+- Different data-disk setup for dynatrace and cassandra/elastic.
 
