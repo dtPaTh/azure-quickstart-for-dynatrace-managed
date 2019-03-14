@@ -10,7 +10,6 @@
 ## How-To use
 See how-to [edit and deploy the template in the Azure Portal](https://github.com/dtPaTh/azure-quickstart-for-dynatrace-managed/tree/develop) 
 
-
 ## Learnings
 
 ### Cluster Installation
@@ -51,3 +50,6 @@ See how-to [edit and deploy the template in the Azure Portal](https://github.com
 
 - Different data-disk setup for dynatrace and cassandra/elastic.
 
+# Solution Template
+- [How-To Test createUIDefinition](https://docs.microsoft.com/en-us/azure/managed-applications/test-createuidefinition)
+- [How-To Validate SolutionTemplate](https://github.com/Azure/azure-quickstart-templates/tree/master/test/template-validation-tests)
