@@ -9,7 +9,7 @@
                 "name": "dtClusterSetup",
                 "label": "Dynatrace Cluster Configuration",
                 "subLabel": {
-                    "preValidation": "Configure",
+                    "preValidation": "Provide installation parameters",
                     "postValidation": "Done"
                 },
                 "bladeTitle": "Dynatrace Cluster Config",
@@ -85,6 +85,7 @@
                                 "label": "Name",
                                 "constraints": {
                                     "required": true,
+                                    "regex": "^([a-zA-Z0-9 ]{2,32})$",
                                     "validationMessage": "Please provide a name for your environment"
                                 }
                             },
@@ -94,6 +95,7 @@
                                 "label": "Administrators first name",
                                 "constraints": {
                                     "required": true,
+                                    "regex": "^([a-zA-Z0-9 ]{2,32})$",
                                     "validationMessage": "Please provide users firstnamee"
                                 }
                             },
@@ -103,6 +105,7 @@
                                 "label": "Administrators last name",
                                 "constraints": {
                                     "required": true,
+                                    "regex": "^([a-zA-Z0-9 ]{2,32})$",
                                     "validationMessage": "Please provide users lastname"
                                 }
                             },
@@ -112,19 +115,22 @@
                                 "label": "Administrators Email",
                                 "constraints": {
                                     "required": true,
-                                    "validationMessage": "Please provide users email address"
+                                    "regex":"^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$",
+                                    "validationMessage": "Please provide a valid email address"
                                 }
                             },
                             {
                                 "name": "initialEnvironmentAdminSecret",
                                 "type": "Microsoft.Common.PasswordBox",
+                                "toolTip": "Password must be at least 6 characters long and have 3 out of the following: one number, one lower case, one upper case, or one special character",
                                 "label": {
                                     "password": "Password",
                                     "confirmPassword": "Confirm password"
                                 },
                                 "constraints": {
                                     "required": true,
-                                    "validationMessage": "Please provide a password"
+                                    "regex": "^((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])|(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*])|(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*])|(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])).{6,72}$",
+                                    "validationMessage": "Password must be at least 6 characters long and have 3 out of the following: one number, one lower case, one upper case, or one special character"
                                 }
                             }
                         ],
@@ -255,68 +261,95 @@
                 "name": "networkConfig",
                 "label": "Network settings",
                 "subLabel": {
-                    "preValidation": "Configure the virtual network settings",
+                    "preValidation": "Configure the virtual network",
                     "postValidation": "Done"
                 },
                 "bladeTitle": "Network settings",
                 "elements": [
                     {
-                        "name": "virtualNetwork",
-                        "type": "Microsoft.Network.VirtualNetworkCombo",
-                        "label": {
-                            "virtualNetwork": "Virtual network",
-                            "subnets": "Subnets"
-                        },
-                        "toolTip": {
-                            "virtualNetwork": "Virtual network",
-                            "subnets": "Subnets"
-                        },
-                        "defaultValue": {
-                            "name": "[concat('vnet-',string(rand(101,999))]",
-                            "addressPrefixSize": "/16"
-                        },
-                        "constraints": {
-                            "minAddressPrefixSize": "/29"
-                        },
-                        "options": {
-                            "hideExisting": false
-                        },
-                        "subnets": {
-                            "subnet0": {
-                                "label": "First subnet",
+                        "name": "vnet",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Virtual Network",
+                        "elements": [
+                            {
+                                "name": "virtualNetwork",
+                                "type": "Microsoft.Network.VirtualNetworkCombo",
+                                "label": {
+                                    "virtualNetwork": "Virtual network",
+                                    "subnets": "Subnets"
+                                },
+                                "toolTip": {
+                                    "virtualNetwork": "Virtual network",
+                                    "subnets": "Subnets"
+                                },
                                 "defaultValue": {
-                                    "name": "subnet-1",
-                                    "addressPrefixSize": "/26"
+                                    "name": "[concat('vnet-',string(rand(101,999)))]",
+                                    "addressPrefixSize": "/16"
                                 },
                                 "constraints": {
-                                    "minAddressPrefixSize": "/29",
-                                    "minAddressCount": 4,
-                                    "requireContiguousAddresses": true
+                                    "minAddressPrefixSize": "/29"
+                                },
+                                "options": {
+                                    "hideExisting": false
+                                },
+                                "subnets": {
+                                    "subnet0": {
+                                        "label": "First subnet",
+                                        "defaultValue": {
+                                            "name": "subnet-1",
+                                            "addressPrefixSize": "/26"
+                                        },
+                                        "constraints": {
+                                            "minAddressPrefixSize": "/29",
+                                            "minAddressCount": 4,
+                                            "requireContiguousAddresses": true
+                                        }
+                                    }
                                 }
                             }
-                        },
+                        ],
                         "visible": true
-					},
-					{
-						"name": "nodeDNSPrefix",
-						"type": "Microsoft.Common.TextBox",
-						"defaultValue": "[concat('dynatrace-',string(rand(9999, 99999)),'-')]",
-						"label": "Clusternode DNS prefix",
-						"constraints": {
-							"required": true,
-							"regex": "^([a-z0-9-]{4,32})$",
-							"validationMessage": "DNS prefix for the clusternodes, which will be post-fixed with the node-id"
-						}
-					}
+                    },
+                    {
+                        "name": "dnsPrefix",
+                        "type": "Microsoft.Common.Section",
+                        "label": "DNS Settings",
+                        "elements": [
+                            {
+                                "name": "masterDNSPrefix",
+                                "type": "Microsoft.Common.TextBox",
+                                "defaultValue": "[concat('dt-master',string(rand(9999, 99999)),'-')]",
+                                "label": "DNS prefix for master node",
+                                "constraints": {
+                                    "required": true,
+                                    "regex": "^([a-z0-9-]{4,32})$",
+                                    "validationMessage": "DNS prefix for the master cluster node"
+                                }
+                            },
+                            {
+                                "name": "nodeDNSPrefix",
+                                "type": "Microsoft.Common.TextBox",
+                                "defaultValue": "[concat('dt-node',string(rand(9999, 99999)),'-')]",
+                                "label": "DNS prefix for sub nodes",
+                                "constraints": {
+                                    "required": true,
+                                    "regex": "^([a-z0-9-]{4,32})$",
+                                    "validationMessage": "DNS prefix for the clusternodes, which will be post-fixed with the node-id"
+                                }
+                            }
+                        ],
+                        "visible": true
+                    }
                 ]
             }
         ],
         "outputs": {
+            "location":"[location()]",
 
             "licenseKey":"[steps('dtClusterSetup').license.licenseKey]",
             
 			"installerDownloadUrl":"[steps('dtClusterSetup').installer.installerDownloadUrl]",
-			"installerScriptHost":"[steps('dtClusterSetup').installer.installerScriptHost]",
+			"scriptHost":"[steps('dtClusterSetup').installer.installerScriptHost]",
 			
 			"initialEnvironmentName":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentName]",
 			"initialEnvironmentAdminFirstname":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminFirstname]",
@@ -332,16 +365,17 @@
 			"adminUsername":"[steps('clusterNodeSetup').nodeAccess.adminUsername]",
 			"adminPassword":"[steps('clusterNodeSetup').nodeAccess.adminPassword]",
 
-			"virtualNetworkNewOrExisting": "[steps('networkConfig').virtualNetwork.newOrExisting]",
-			"virtualNetworkName": "[steps('networkConfig').virtualNetwork.name]",
-            "virtualNetworkExistingRGName": "[steps('networkConfig').virtualNetwork.resourceGroup]",
-            "virtualNetworkAddressPrefix": "[steps('networkConfig').virtualNetwork.addressPrefix]",
+			"virtualNetworkNewOrExisting": "[steps('networkConfig').vnet.virtualNetwork.newOrExisting]",
+			"virtualNetworkName": "[steps('networkConfig').vnet.virtualNetwork.name]",
+            "virtualNetworkResourceGroupName": "[steps('networkConfig').vnet.virtualNetwork.resourceGroup]",
+            "vnetAddressPrefix": "[steps('networkConfig').vnet.virtualNetwork.addressPrefix]",
 			
-			"subnet1Name": "[steps('networkConfig').virtualNetwork.subnets.subnet0.name]",
-            "subnet1Prefix": "[steps('networkConfig').virtualNetwork.subnets.subnet0.addressPrefix]",
-			"subnet1StartAddress": "[steps('networkConfig').virtualNetwork.subnets.subnet0.startAddress]",
-			
-			"nodeDNSPrefix": "[steps('networkConfig').nodeDNSPrefix]"
+			"subnetName": "[steps('networkConfig').vnet.virtualNetwork.subnets.subnet0.name]",
+            "subnetAddressPrefix": "[steps('networkConfig').vnet.virtualNetwork.subnets.subnet0.addressPrefix]",
+			"subnetStartAddress": "[steps('networkConfig').vnet.virtualNetwork.subnets.subnet0.startAddress]",
+            
+            "masterDNSPrefix": "[steps('networkConfig').dnsPrefix.masterDNSPrefix]",
+			"nodeDNSPrefix": "[steps('networkConfig').dnsPrefix.nodeDNSPrefix]"
 			
 			
         }
