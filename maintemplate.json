@@ -81,16 +81,16 @@
         },
         "masterDNSPrefix": {
             "type": "string",
-            "defaultValue": "dt-master",
+            "defaultValue": "[concat('dt-', uniqueString(resourceGroup().id),'-master')]",
             "metadata": {
                 "description": "DNS prefix for the master node"
             }
         },
         "nodeDNSPrefix": {
             "type": "string",
-            "defaultValue": "dt-node",
+            "defaultValue": "[concat('dt-', uniqueString(resourceGroup().id),'-node')]",
             "metadata": {
-                "description": "DNS prefix for the secondary node, which will be postfixed with the node-id"
+                "description": "DNS prefix for the secondary node, which will be postfixed with the -node-id"
             }
         },
         "licenseKey": {
