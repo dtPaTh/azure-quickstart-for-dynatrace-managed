@@ -27,7 +27,7 @@ log 'download latest installer'
 wget "$installerDownloadUrl" -O /tmp/dt-mgd-install.sh 1>> $LOGFILE
 
 log 'execute installer'
-sudo sh /tmp/dt-mgd-install.sh --install-silent --license "$managedLicenseKey" --datastore-dir /datadisks/disk1/dynatrace --svr-datastore-dir /datadisks/disk2/dynatrace --initial-environment "$initialEnvironmentName" --initial-first-name "$initialEnvironmentAdminFirstname" --initial-last-name "$initialEnvironmentAdminLastname" --initial-email "$initialEnvironmentAdminEmail" --initial-pass "$initialEnvironmentAdminSecret"  1>> $LOGFILE
+sudo sh /tmp/dt-mgd-install.sh --install-silent --license "$managedLicenseKey" --datastore-dir /datadisks/disk1/dynatrace --svr-datastore-dir /datadisks/disk2/dynatrace --cas-datastore-dir /datadisks/disk3/dynatrace --els-datastore-dir /datadisks/disk4/dynatrace --initial-environment "$initialEnvironmentName" --initial-first-name "$initialEnvironmentAdminFirstname" --initial-last-name "$initialEnvironmentAdminLastname" --initial-email "$initialEnvironmentAdminEmail" --initial-pass "$initialEnvironmentAdminSecret"  1>> $LOGFILE
 
 publicIp=""
 if [ -z "$fqdn" ] 

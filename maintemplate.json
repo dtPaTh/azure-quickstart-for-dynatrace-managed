@@ -43,19 +43,37 @@
                 "description": "VM instance type for dynatrace cluster nodes (https://www.dynatrace.com/support/help/get-started/managed-introduction/what-are-the-hardware-and-operating-system-requirements/)"
             }
         },
+       
         "sizeOfDataDiskInGB": {
             "type": "int",
-            "defaultValue": 2000,
-            "minValue": 0,
+            "defaultValue": 50,
+            "minValue": 25,
             "metadata": {
-                "description": "Size (GB) for datadisk used for Dynatrace installation, long-term metrics store and elastic search"
+                "description": "Size (GB) for datadisk used for Dynatrace logs, temporary files, installers downloads"
             }
         },
         "sizeOfTransactionDataDiskInGB": {
             "type": "int",
             "defaultValue": 200,
+            "minValue": 50,
             "metadata": {
                 "description": "Size (GB) for datadisk used for transaction store"
+            }
+        },
+        "sizeOfLongTermMetricsDiskInGB": {
+            "type": "int",
+            "defaultValue": 1000,
+            "minValue": 100,
+            "metadata": {
+                "description": "Size (GB) for datadisk used for Dynatrace installation, long-term metrics store and elastic search"
+            }
+        },
+        "sizeOfElasticSearchDiskInGB": {
+            "type": "int",
+            "defaultValue": 1500,
+            "minValue": 50,
+            "metadata": {
+                "description": "Size (GB) for datadisk used for Dynatrace installation, long-term metrics store and elastic search"
             }
         },
         "totalNodeInstanceCount": {
@@ -155,6 +173,8 @@
         "availabilitySetName": "cluster-nodes",
         "sizeOfDataDiskInGB": "[parameters('sizeOfDataDiskInGB')]",
         "sizeOfSessionDataDiskInGB": "[parameters('sizeOfTransactionDataDiskInGB')]",
+        "sizeOfLongTermMetricsDiskInGB": "[parameters('sizeOfLongTermMetricsDiskInGB')]",
+        "sizeOfElasticSearchDiskInGB": "[parameters('sizeOfElasticSearchDiskInGB')]",
         "nodeInstanceCount": "[sub(parameters('totalNodeInstanceCount'),1)]",
         "masterName": "master",
         "masterNicName": "master-nic",
@@ -386,6 +406,16 @@
                             "diskSizeGB": "[variables('sizeOfSessionDataDiskInGB')]",
                             "lun": 1,
                             "createOption": "Empty"
+                        },
+                        {
+                            "diskSizeGB": "[variables('sizeOfLongTermMetricsDiskInGB')]",
+                            "lun": 2,
+                            "createOption": "Empty"
+                        },
+                        {
+                            "diskSizeGB": "[variables('sizeOfElasticSearchDiskInGB')]",
+                            "lun": 3,
+                            "createOption": "Empty"
                         }
                     ]
                 },
@@ -473,6 +503,16 @@
                         {
                             "diskSizeGB": "[variables('sizeOfSessionDataDiskInGB')]",
                             "lun": 1,
+                            "createOption": "Empty"
+                        },
+                        {
+                            "diskSizeGB": "[variables('sizeOfLongTermMetricsDiskInGB')]",
+                            "lun": 2,
+                            "createOption": "Empty"
+                        },
+                        {
+                            "diskSizeGB": "[variables('sizeOfElasticSearchDiskInGB')]",
+                            "lun": 3,
                             "createOption": "Empty"
                         }
                     ]

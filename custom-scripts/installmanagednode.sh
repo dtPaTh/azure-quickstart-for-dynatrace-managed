@@ -23,7 +23,14 @@ log 'download latest installer'
 wget "$installerDownloadUrl" -O /tmp/dt-mgd-install.sh 1>> $LOGFILE
 
 log 'execute installer'
-sudo sh /tmp/dt-mgd-install.sh --install-silent --license "$managedLicenseKey" --seed-ip "$seedIp" --seed-auth "$seedAuthToken" --datastore-dir /datadisks/disk1/dynatrace --svr-datastore-dir /datadisks/disk2/dynatrace  1>> $LOGFILE
+ #--binaries-dir <path>     full path to Dynatrace binaries
+ #--datastore-dir <path>    full path to Dynatrace data
+ #--cas-datastore-dir <path> full path to Dynatrace metrics repository
+ #--els-datastore-dir <path> full path to Dynatrace Elasticsearch store
+ #--svr-datastore-dir <path> full path to Dynatrace server store
+ #--rpl-datastore-dir <path> full path to Dynatrace session replay store
+
+sudo sh /tmp/dt-mgd-install.sh --install-silent --license "$managedLicenseKey" --seed-ip "$seedIp" --seed-auth "$seedAuthToken" --datastore-dir /datadisks/disk1/dynatrace --svr-datastore-dir /datadisks/disk2/dynatrace --cas-datastore-dir /datadisks/disk3/dynatrace --els-datastore-dir /datadisks/disk4/dynatrace  1>> $LOGFILE
 
 publicIp=""
 if [ -z "$fqdn" ] 
