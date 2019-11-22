@@ -63,12 +63,12 @@
                                 "name": "installerScriptHost",
                                 "type": "Microsoft.Common.TextBox",
                                 "label": "Installer script location",
-                                "defaultValue": "https://dt-webapp-1.azurewebsites.net/",
-                                "toolTip": "The installation is using custom script extensions. Choose an alternative locations to use customized scripts",
+                                "defaultValue": "",
+                                "toolTip": "The installation is using custom scripts. Define your script host url.",
                                 "constraints": {
                                     "required": true,
                                     "regex": "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$",
-                                    "validationMessage": "Please provide a valid url"
+                                    "validationMessage": "Please provide a valid url. e.g. https://mycompanyscriptartifacts.com/"
                                 }
                             }
                         ],
@@ -206,6 +206,30 @@
 									"regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
                                     "validationMessage": "Disk size (GB) used for transaction store"
                                 }
+                            },
+							{
+                                "name": "sizeOfLongTermMetricsDiskInGB",
+								"type": "Microsoft.Common.TextBox",
+								"defaultValue": "1000",
+								"label": "Long-term metricsstore disk size (GB)",
+								"toolTip": "Size (GB) for datadisk used for long-term metrics",
+                                "constraints": {
+									"required": true,
+									"regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
+                                    "validationMessage": "Disk size (GB) used for data storage"
+                                }
+							},
+							{
+                                "name": "sizeOfElasticSearchDiskInGB",
+								"type": "Microsoft.Common.TextBox",
+								"defaultValue": "1500",
+								"label": "User session store disk size (GB)",
+								"toolTip": "Disk Size (GB) for datadisk used for user sessions",
+                                "constraints": {
+									"required": true,
+									"regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
+                                    "validationMessage": "Disk size (GB) used for transaction store"
+                                }
                             }
                         ],
                         "visible": true
@@ -294,7 +318,7 @@
                                 },
                                 "subnets": {
                                     "subnet0": {
-                                        "label": "First subnet",
+                                        "label": "Subnet",
                                         "defaultValue": {
                                             "name": "subnet-1",
                                             "addressPrefixSize": "/26"
@@ -360,7 +384,9 @@
 			"totalNodeInstanceCount":"[steps('clusterNodeSetup').nodeSetup.totalNodeInstanceCount]",
 			"clusterVmSku":"[steps('clusterNodeSetup').nodeSetup.clusterVmSku]",
 			"sizeOfDataDiskInGB":"[steps('clusterNodeSetup').nodeSetup.sizeOfDataDiskInGB]",
-			"sizeOfTransactionDataDiskInGB":"[steps('clusterNodeSetup').nodeSetup.sizeOfTransactionDataDiskInGB]",
+            "sizeOfTransactionDataDiskInGB":"[steps('clusterNodeSetup').nodeSetup.sizeOfTransactionDataDiskInGB]",
+            "sizeOfLongTermMetricsDiskInGB":"[steps('clusterNodeSetup').nodeSetup.sizeOfLongTermMetricsDiskInGB]",
+			"sizeOfElasticSearchDiskInGB":"[steps('clusterNodeSetup').nodeSetup.sizeOfElasticSearchDiskInGB]",
 
 			"adminUsername":"[steps('clusterNodeSetup').nodeAccess.adminUsername]",
 			"adminPassword":"[steps('clusterNodeSetup').nodeAccess.adminPassword]",
@@ -372,7 +398,6 @@
 			
 			"subnetName": "[steps('networkConfig').vnet.virtualNetwork.subnets.subnet0.name]",
             "subnetAddressPrefix": "[steps('networkConfig').vnet.virtualNetwork.subnets.subnet0.addressPrefix]",
-			
             
             "masterDNSPrefix": "[steps('networkConfig').dnsPrefix.masterDNSPrefix]",
 			"nodeDNSPrefix": "[steps('networkConfig').dnsPrefix.nodeDNSPrefix]"

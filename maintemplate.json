@@ -65,7 +65,7 @@
             "defaultValue": 1000,
             "minValue": 100,
             "metadata": {
-                "description": "Size (GB) for datadisk used for Dynatrace installation, long-term metrics store and elastic search"
+                "description": "Size (GB) for datadisk used for long-term metrics"
             }
         },
         "sizeOfElasticSearchDiskInGB": {
@@ -73,7 +73,7 @@
             "defaultValue": 1500,
             "minValue": 50,
             "metadata": {
-                "description": "Size (GB) for datadisk used for Dynatrace installation, long-term metrics store and elastic search"
+                "description": "Size (GB) for datadisk used for user sessions"
             }
         },
         "totalNodeInstanceCount": {
@@ -157,7 +157,7 @@
         },
         "scriptHost": {
             "type": "string",
-            "defaultValue": "https://dt-webapp-1.azurewebsites.net/",
+            "defaultValue": "",
             "metadata": {
                 "description": "Base uri where the custom script extension scripts are hosted"
             }
