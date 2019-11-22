@@ -8,7 +8,10 @@
 - Currently limited to 2TB per datadisk mount 
 
 ## How-To use
+The scripts in folder /custom-scripts need to be hosted on e.g. a blob-storage. You then only need to provide the script host url in the scriptHost parameter. 
+
 See how-to [edit and deploy the template in the Azure Portal](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-manager-quickstart-create-templates-use-the-portal#edit-and-deploy-the-template) 
+
 
 ## Notes
 
