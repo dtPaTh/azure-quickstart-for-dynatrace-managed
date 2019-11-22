@@ -13,7 +13,6 @@ log() {
     echo $1 >> $LOGFILE
 }
 
-
 log "run installmanagednode.sh"
 
 log 'prepare datadisks'
@@ -23,14 +22,14 @@ log 'download latest installer'
 wget "$installerDownloadUrl" -O /tmp/dt-mgd-install.sh 1>> $LOGFILE
 
 log 'execute installer'
+ 
  #--binaries-dir <path>     full path to Dynatrace binaries
  #--datastore-dir <path>    full path to Dynatrace data
  #--cas-datastore-dir <path> full path to Dynatrace metrics repository
  #--els-datastore-dir <path> full path to Dynatrace Elasticsearch store
  #--svr-datastore-dir <path> full path to Dynatrace server store
  #--rpl-datastore-dir <path> full path to Dynatrace session replay store
-
-sudo sh /tmp/dt-mgd-install.sh --install-silent --license "$managedLicenseKey" --seed-ip "$seedIp" --seed-auth "$seedAuthToken" --datastore-dir /datadisks/disk1/dynatrace --svr-datastore-dir /datadisks/disk2/dynatrace --cas-datastore-dir /datadisks/disk3/dynatrace --els-datastore-dir /datadisks/disk4/dynatrace  1>> $LOGFILE
+sudo sh /tmp/dt-mgd-install.sh --timeouts fw:120 --install-silent --license "$managedLicenseKey" --seed-ip "$seedIp" --seed-auth "$seedAuthToken" --datastore-dir /datadisks/disk1/dynatrace --svr-datastore-dir /datadisks/disk2/dynatrace --cas-datastore-dir /datadisks/disk3/dynatrace --els-datastore-dir /datadisks/disk4/dynatrace  1>> $LOGFILE
 
 publicIp=""
 if [ -z "$fqdn" ] 
@@ -55,7 +54,7 @@ else
             break
         else
             waitTime=$((i*3))
-            log "[WARNING] retry in $waitTime minute(s) to ensure server is responsive..."
+            log "[WARNING] unable to set public ip, retry in $waitTime minute(s) to ensure server is responsive..."
             sleep "$waitTime""m"
         fi
     done
