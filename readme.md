@@ -8,7 +8,7 @@
 - Currently limited to 2TB per datadisk mount 
 
 ## How-To use
-See how-to [edit and deploy the template in the Azure Portal](https://github.com/dtPaTh/azure-quickstart-for-dynatrace-managed/tree/develop) 
+See how-to [edit and deploy the template in the Azure Portal](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-manager-quickstart-create-templates-use-the-portal#edit-and-deploy-the-template) 
 
 ## Notes
 
