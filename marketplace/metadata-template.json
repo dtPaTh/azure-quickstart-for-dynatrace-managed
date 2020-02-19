@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Dynatrace Managed - Software intelligence for the enterprise cloud",
+  "description": "This allows you to deploy a Dynatrace Managed (multi-node) cluster.",
+  "summary": "This template requires Dynatrace Managed license (BYOL) information and provides a fully automated, ready-to-run cluster installation for Dynatrace Managed",
+  "githubUsername": "dtPaTh",
+  "dateUpdated": "@@DATE@@"
+}
