@@ -63,7 +63,7 @@
                                 "name": "installerScriptHost",
                                 "type": "Microsoft.Common.TextBox",
                                 "label": "Installer script location",
-                                "defaultValue": "",
+                                "defaultValue": "https://raw.githubusercontent.com/dtPaTh/azure-quickstart-for-dynatrace-managed/release-v1/custom-scripts/",
                                 "toolTip": "The installation is using custom scripts. Define your script host url.",
                                 "constraints": {
                                     "required": true,
@@ -342,7 +342,7 @@
                             {
                                 "name": "masterDNSPrefix",
                                 "type": "Microsoft.Common.TextBox",
-                                "defaultValue": "[concat('dt-master',string(rand(9999, 99999)),'-')]",
+                                "defaultValue": "[concat('dt-master',string(rand(9999, 99999)))]",
                                 "label": "DNS prefix for master node",
                                 "constraints": {
                                     "required": true,
