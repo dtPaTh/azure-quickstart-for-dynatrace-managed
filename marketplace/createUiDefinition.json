@@ -3,7 +3,8 @@
     "handler": "Microsoft.Compute.MultiVm",
     "version": "0.1.2-preview",
     "parameters": {
-        "basics": [],
+        "basics": [
+        ],
         "steps": [
             {
                 "name": "dtClusterSetup",
@@ -83,6 +84,7 @@
                                 "name": "initialEnvironmentName",
                                 "type": "Microsoft.Common.TextBox",
                                 "label": "Name",
+                                "toolTip": "Name of the initial environment created",
                                 "constraints": {
                                     "required": true,
                                     "regex": "^([a-zA-Z0-9 ]{2,32})$",
@@ -93,6 +95,7 @@
                                 "name": "initialEnvironmentAdminFirstname",
                                 "type": "Microsoft.Common.TextBox",
                                 "label": "Administrators first name",
+                                "toolTip": "First name of your environment administrator user.",
                                 "constraints": {
                                     "required": true,
                                     "regex": "^([a-zA-Z0-9 ]{2,32})$",
@@ -101,6 +104,7 @@
                             },
                             {
                                 "name": "initialEnvironmentAdminLastname",
+                                "toolTip": "Last name of your environment administrator user.",
                                 "type": "Microsoft.Common.TextBox",
                                 "label": "Administrators last name",
                                 "constraints": {
@@ -113,6 +117,7 @@
                                 "name": "initialEnvironmentAdminEmail",
                                 "type": "Microsoft.Common.TextBox",
                                 "label": "Administrators Email",
+                                "toolTip": "Email of your environment administrator user.",
                                 "constraints": {
                                     "required": true,
                                     "regex":"^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$",
@@ -140,12 +145,12 @@
 			},
 			{
                 "name": "clusterNodeSetup",
-                "label": "Cluster Setup",
+                "label": "Cluster Sizing",
                 "subLabel": {
                     "preValidation": "Configure virtual machines",
                     "postValidation": "Done"
                 },
-                "bladeTitle": "Cluster Setup",
+                "bladeTitle": "Cluster Sizing",
                 "elements": [
                     {
                         "name": "clusterRequirementsInfo",
@@ -157,130 +162,127 @@
                             "uri": "https://www.dynatrace.com/support/help/setup-and-configuration/managed/installation/dynatrace-managed-hardware-and-system-requirements/#expand-293hardware-requirements"
                         }
                     },
-					{
-                        "name": "nodeSetup",
-                        "type": "Microsoft.Common.Section",
-                        "label": "Cluster Nodes",
-                        "elements": [
-                            {
-                                "name": "totalNodeInstanceCount",
-								"type": "Microsoft.Common.TextBox",
-								"defaultValue": "3",
-                                "label": "Total number of cluster nodes",
-                                "constraints": {
-									"required": true,
-									"regex": "^([1-9]|[1-2][0-4])$",
-                                    "validationMessage": "Please provide the number of cluster nodes [1-24]"
-                                }
-							},
-							{
-								"name": "clusterVmSku",
-								"type": "Microsoft.Compute.SizeSelector",
-								"label": "Virtual mmachine size",
-								"toolTip": "The size of the virtual machine for the cluster nodes",
-								"osPlatform": "Linux",
-								"recommendedSizes": [
-									"Standard_D8s_v3"
-								]
-							},
-							{
-                                "name": "sizeOfDataDiskInGB",
-								"type": "Microsoft.Common.TextBox",
-								"defaultValue": "200",
-								"label": "Data store disk size (GB)",
-								"toolTip": "Disk size (GB) for data storage (Dynatrace installation, long-term metrics and elastic-search)",
-                                "constraints": {
-									"required": true,
-									"regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
-                                    "validationMessage": "Disk size (GB) used for data storage"
-                                }
-							},
-							{
-                                "name": "sizeOfTransactionDataDiskInGB",
-								"type": "Microsoft.Common.TextBox",
-								"defaultValue": "2000",
-								"label": "Transaction store disk size (GB)",
-								"toolTip": "Disk size (GB) used for transaction storage",
-                                "constraints": {
-									"required": true,
-									"regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
-                                    "validationMessage": "Disk size (GB) used for transaction store"
-                                }
-                            },
-							{
-                                "name": "sizeOfLongTermMetricsDiskInGB",
-								"type": "Microsoft.Common.TextBox",
-								"defaultValue": "1000",
-								"label": "Long-term metricsstore disk size (GB)",
-								"toolTip": "Size (GB) for datadisk used for long-term metrics",
-                                "constraints": {
-									"required": true,
-									"regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
-                                    "validationMessage": "Disk size (GB) used for data storage"
-                                }
-							},
-							{
-                                "name": "sizeOfElasticSearchDiskInGB",
-								"type": "Microsoft.Common.TextBox",
-								"defaultValue": "1500",
-								"label": "User session store disk size (GB)",
-								"toolTip": "Disk Size (GB) for datadisk used for user sessions",
-                                "constraints": {
-									"required": true,
-									"regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
-                                    "validationMessage": "Disk size (GB) used for transaction store"
-                                }
-                            }
+                    {
+                        "name": "vmSize",
+                        "type": "Microsoft.Compute.SizeSelector",
+                        "label": "Virtual machine size",
+                        "toolTip": "The size of virtual machine to provision.",
+                        "recommendedSizes": [
+                            "Standard_D8s_v3"
                         ],
-                        "visible": true
-					},
-					{
-                        "name": "nodeAccess",
-                        "type": "Microsoft.Common.Section",
-                        "label": "SSH Access",
-                        "elements": [
-							{
-								"name": "adminUsername",
-								"type": "Microsoft.Compute.UserNameTextBox",
-								"label": "Username",
-								"toolTip": "Insert the username for SSH access here.",
-								"constraints": {
-									"required": true,
-									"regex": "([a-z_][a-z0-9_]{0,30})",
-									"validationMessage": "Username may only contain letters and numbers."
-								},
-								"osPlatform": "Linux"
-							},
-							{
-								"name": "adminPassword",
-                                "type": "Microsoft.Compute.CredentialsCombo",
-                                "label": {
-                                    "authenticationType": "Authentication type",
-                                    "password": "Password",
-                                    "confirmPassword": "Confirm password",
-                                    "sshPublicKey": "SSH public key"
-                                },
-                                "toolTip": {
-                                    "authenticationType": "Authentication Type for the Virtual Machine",
-                                    "password": "Password for the Virtual Machine",
-                                    "sshPublicKey": "SSH Public Key for the Virtual Machine"
-                                },
-								"constraints": {
-								  "required": true,
-								  "customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,}$",
-								  "customValidationMessage": "The password must contain at least 12 characters, with at least 1 letter and 1 number."
-								},
-								"options": {
-								  "hideConfirmation": false,
-								  "hidePassword": false
-								},
-								"osPlatform": "Linux"
-							  }
-                        ],
-                        "visible": true
+                        "osPlatform": "Linux"
+                    },
+                    {
+                        "name": "totalNodeInstanceCount",
+                        "type": "Microsoft.Common.TextBox",
+                        "defaultValue": "3",
+                        "label": "Total number of cluster nodes",
+                        "toolTip": "Total number of cluster nodes",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^([1-9]|[1-2][0-4])$",
+                            "validationMessage": "Please provide the number of cluster nodes [1-24]"
+                        }
+                    },
+                    {
+                        "name": "sizeOfDataDiskInGB",
+                        "type": "Microsoft.Common.TextBox",
+                        "defaultValue": "200",
+                        "label": "Data store disk size (GB)",
+                        "toolTip": "Disk size (GB) for data storage (Dynatrace installation, long-term metrics and elastic-search)",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
+                            "validationMessage": "Disk size (GB) used for data storage"
+                        }
+                    },
+                    {
+                        "name": "sizeOfTransactionDataDiskInGB",
+                        "type": "Microsoft.Common.TextBox",
+                        "defaultValue": "2000",
+                        "label": "Transaction store disk size (GB)",
+                        "toolTip": "Disk size (GB) used for transaction storage",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
+                            "validationMessage": "Disk size (GB) used for transaction store"
+                        }
+                    },
+                    {
+                        "name": "sizeOfLongTermMetricsDiskInGB",
+                        "type": "Microsoft.Common.TextBox",
+                        "defaultValue": "1000",
+                        "label": "Long-term metricsstore disk size (GB)",
+                        "toolTip": "Size (GB) for datadisk used for long-term metrics",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
+                            "validationMessage": "Disk size (GB) used for data storage"
+                        }
+                    },
+                    {
+                        "name": "sizeOfElasticSearchDiskInGB",
+                        "type": "Microsoft.Common.TextBox",
+                        "defaultValue": "1500",
+                        "label": "User session store disk size (GB)",
+                        "toolTip": "Disk Size (GB) for datadisk used for user sessions",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^([1-9][0-9]|[1-9][0-9][0-9]||[1-9][0-9][0-9][0-9])$",
+                            "validationMessage": "Disk size (GB) used for transaction store"
+                        }
                     }
                 ]
             },			
+            {
+                "name": "clusterNodeAccess",
+                "label": "Cluster remote-access",
+                "subLabel": {
+                    "preValidation": "Configure your SSH access",
+                    "postValidation": "Done"
+                },
+                "bladeTitle": "Cluster remote-access",
+                "elements": [
+                    {
+                        "name": "adminUsername",
+                        "type": "Microsoft.Compute.UserNameTextBox",
+                        "label": "Username",
+                        "toolTip": "Insert the username for SSH access here.",
+                        "constraints": {
+                            "required": true,
+                            "regex": "([a-z_][a-z0-9_]{0,30})",
+                            "validationMessage": "Username may only contain letters and numbers."
+                        },
+                        "osPlatform": "Linux"
+                    },
+                    {
+                        "name": "adminPassword",
+                        "type": "Microsoft.Compute.CredentialsCombo",
+                        "label": {
+                            "authenticationType": "Authentication type",
+                            "password": "Password",
+                            "confirmPassword": "Confirm password",
+                            "sshPublicKey": "SSH public key"
+                        },
+                        "toolTip": {
+                            "authenticationType": "Authentication Type for the Virtual Machine",
+                            "password": "Password for the Virtual Machine",
+                            "sshPublicKey": "SSH Public Key for the Virtual Machine"
+                        },
+                        "constraints": {
+                            "required": true,
+                            "customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,}$",
+                            "customValidationMessage": "The password must contain at least 12 characters, with at least 1 letter and 1 number."
+                        },
+                        "options": {
+                            "hideConfirmation": false,
+                            "hidePassword": false
+                        },
+                        "osPlatform": "Linux"
+                    }
+                
+                ]
+            },	
             {
                 "name": "networkConfig",
                 "label": "Network settings",
@@ -344,6 +346,7 @@
                                 "type": "Microsoft.Common.TextBox",
                                 "defaultValue": "[concat('dt-master',string(rand(9999, 99999)))]",
                                 "label": "DNS prefix for master node",
+                                "toolTip": "DNS prefix for master node",
                                 "constraints": {
                                     "required": true,
                                     "regex": "^([a-z0-9-]{4,32})$",
@@ -355,10 +358,11 @@
                                 "type": "Microsoft.Common.TextBox",
                                 "defaultValue": "[concat('dt-node',string(rand(9999, 99999)),'-')]",
                                 "label": "DNS prefix for sub nodes",
+                                "toolTip": "DNS prefix for sub nodes will be appended with the sequential node number.",
                                 "constraints": {
                                     "required": true,
                                     "regex": "^([a-z0-9-]{4,32})$",
-                                    "validationMessage": "DNS prefix for the clusternodes, which will be post-fixed with the node-id"
+                                    "validationMessage": "DNS prefix for the clusternodes, which will be appended with the sequential node number"
                                 }
                             }
                         ],
@@ -380,16 +384,16 @@
 			"initialEnvironmentAdminLastname":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminLastname]",
 			"initialEnvironmentAdminEmail":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminEmail]",
 			"initialEnvironmentAdminSecret":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminSecret]",
-			
-			"totalNodeInstanceCount":"[steps('clusterNodeSetup').nodeSetup.totalNodeInstanceCount]",
-			"clusterVmSku":"[steps('clusterNodeSetup').nodeSetup.clusterVmSku]",
-			"sizeOfDataDiskInGB":"[steps('clusterNodeSetup').nodeSetup.sizeOfDataDiskInGB]",
-            "sizeOfTransactionDataDiskInGB":"[steps('clusterNodeSetup').nodeSetup.sizeOfTransactionDataDiskInGB]",
-            "sizeOfLongTermMetricsDiskInGB":"[steps('clusterNodeSetup').nodeSetup.sizeOfLongTermMetricsDiskInGB]",
-			"sizeOfElasticSearchDiskInGB":"[steps('clusterNodeSetup').nodeSetup.sizeOfElasticSearchDiskInGB]",
-
-			"adminUsername":"[steps('clusterNodeSetup').nodeAccess.adminUsername]",
-			"adminPassword":"[steps('clusterNodeSetup').nodeAccess.adminPassword]",
+            
+            "vmSize":"[steps('clusterNodeSetup').vmSize]",
+            "sizeOfDataDiskInGB":"[steps('clusterNodeSetup').sizeOfDataDiskInGB]",
+            "sizeOfTransactionDataDiskInGB":"[steps('clusterNodeSetup').sizeOfTransactionDataDiskInGB]",
+            "sizeOfLongTermMetricsDiskInGB":"[steps('clusterNodeSetup').sizeOfLongTermMetricsDiskInGB]",
+			"sizeOfElasticSearchDiskInGB":"[steps('clusterNodeSetup').sizeOfElasticSearchDiskInGB]",
+            "totalNodeInstanceCount":"[steps('clusterNodeSetup').totalNodeInstanceCount]",
+            
+			"adminUsername":"[steps('clusterNodeAccess').adminUsername]",
+			"adminPassword":"[steps('clusterNodeAccess').adminPassword]",
 
 			"virtualNetworkNewOrExisting": "[steps('networkConfig').vnet.virtualNetwork.newOrExisting]",
 			"virtualNetworkName": "[steps('networkConfig').vnet.virtualNetwork.name]",
@@ -401,8 +405,6 @@
             
             "masterDNSPrefix": "[steps('networkConfig').dnsPrefix.masterDNSPrefix]",
 			"nodeDNSPrefix": "[steps('networkConfig').dnsPrefix.nodeDNSPrefix]"
-			
-			
         }
     }
 }

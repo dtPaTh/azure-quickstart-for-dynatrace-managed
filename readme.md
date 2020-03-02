@@ -39,6 +39,7 @@ See how-to [edit and deploy the template in the Azure Portal](https://docs.micro
 - Option to use either password or certificate for accessing the nodes
 
 # Solution Template
-- [How-To Test createUIDefinition](https://docs.microsoft.com/en-us/azure/managed-applications/test-createuidefinition)
-- [How-To Validate SolutionTemplate](https://github.com/Azure/azure-quickstart-templates/tree/master/test/template-validation-tests)
+- [How-To Validate SolutionTemplate (uidefinition + arm policies](https://github.com/Azure/arm-ttk/tree/master/arm-ttk)
+- [How-To Test createUIDefinition in Portal](https://docs.microsoft.com/en-us/azure/managed-applications/test-createuidefinition)
+- [How-To Validate SolutionTemplate (Obsolete)](https://github.com/Azure/azure-quickstart-templates/tree/master/test/template-validation-tests)
 
