@@ -104,14 +104,14 @@
         },
         "masterDNSPrefix": {
             "type": "string",
-            "defaultValue": "[concat('dt-', uniqueString(resourceGroup().id),'-master')]",
+            "defaultValue": "[concat('dt-master',uniqueString(resourceGroup().id))]",
             "metadata": {
                 "description": "DNS prefix for the master node"
             }
         },
         "nodeDNSPrefix": {
             "type": "string",
-            "defaultValue": "[concat('dt-', uniqueString(resourceGroup().id),'-node')]",
+            "defaultValue": "[concat('dt-node',uniqueString(resourceGroup().id),'-')]",
             "metadata": {
                 "description": "DNS prefix for the secondary node, which will be postfixed with the -node-id"
             }
@@ -302,7 +302,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('masterPublicIPAddressName'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId(parameters('virtualNetworkResourceGroupName'),'Microsoft.Network/virtualNetworks', variables('vnetName'), '/subnets/',variables('subnetName')))]"
+                                "id": "[resourceId(parameters('virtualNetworkResourceGroupName'),'Microsoft.Network/virtualNetworks/subnets/', variables('vnetName'),variables('subnetName'))]"
                             }
                         }
                     }
@@ -348,7 +348,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('nodePublicIPAddressName'),copyIndex()))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'), '/subnets/',variables('subnetName')))]"
+                                "id": "[resourceId(parameters('virtualNetworkResourceGroupName'),'Microsoft.Network/virtualNetworks/subnets/', variables('vnetName'),variables('subnetName'))]"
                             }
                         }
                     }
