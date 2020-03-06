@@ -1,2 +1,4 @@
 .vs/
 marketplace/test-temp/
+marketplace/pkg*.zip
+marketplace/metadata.json
