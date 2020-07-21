@@ -64,7 +64,7 @@
                                 "name": "installerScriptHost",
                                 "type": "Microsoft.Common.TextBox",
                                 "label": "Installer scripts location",
-                                "defaultValue": "https://raw.githubusercontent.com/dtPaTh/azure-quickstart-for-dynatrace-managed/release-v1/custom-scripts/",
+                                "defaultValue": "https://raw.githubusercontent.com/dtPaTh/azure-quickstart-for-dynatrace-managed/release-v1.2/custom-scripts/",
                                 "toolTip": "The installation is using multiple custom scripts (see https://github.com/dtPaTh/azure-quickstart-for-dynatrace-managed/tree/master/custom-scripts). Define your script host url if you want to use customized scripts.",
                                 "constraints": {
                                     "required": true,
