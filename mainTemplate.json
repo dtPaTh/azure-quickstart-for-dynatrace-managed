@@ -170,7 +170,9 @@
     "variables": {
         "location": "[parameters('location')]",
         "nsgName": "cluster-nsg",
+        "nsgResouceId": "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]",
         "vnetName": "[parameters('virtualNetworkName')]",
+        "vnetResourceId":"[resourceId('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
         "subnetName": "[parameters('subnetName')]",
         "vnetAddressPrefix": "[parameters('vnetAddressPrefix')]",
         "subnetAddressPrefix": "[parameters('subnetAddressPrefix')]",
@@ -181,8 +183,11 @@
         "sizeOfElasticSearchDiskInGB": "[parameters('sizeOfElasticSearchDiskInGB')]",
         "nodeInstanceCount": "[sub(parameters('totalNodeInstanceCount'),1)]",
         "masterName": "master",
+        "masterNodeResourceId":"[resourceId('Microsoft.Compute/virtualMachines/', variables('masterName'))]",
         "masterNicName": "master-nic",
+        "masterNicResourceId":"[resourceId('Microsoft.Network/networkInterfaces/', variables('masterNicName'))]",
         "masterPublicIPAddressName": "master-public-ip",
+        "masterPublicAddressResourceId":"[resourceId('Microsoft.Network/publicIPAddresses/', variables('masterPublicIPAddressName'))]",
         "masterDnsLabelPrefix": "[parameters('masterDNSPrefix')]",
         "masterExtensionName": "dynatrace-master-setup",
         "nodeName": "node",
@@ -250,7 +255,7 @@
             "location": "[variables('location')]",
             "apiVersion": "2019-08-01",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]"
+                "[variables('nsgResouceId')]"
             ],
             "properties": {
                 "addressSpace": {
@@ -289,8 +294,8 @@
             "name": "[variables('masterNicName')]",
             "location": "[variables('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/publicIPAddresses/', variables('masterPublicIPAddressName'))]",
-                "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+                "[variables('masterPublicAddressResourceId')]",
+                "[variables('vnetResourceId')]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -321,7 +326,7 @@
             "properties": {
                 "publicIPAllocationMethod": "Dynamic",
                 "dnsSettings": {
-                    "domainNameLabel": "[concat(variables('nodeDnsLabelPrefix'),add(mul(add(copyIndex(),1),2),1))]"
+                    "domainNameLabel": "[concat(variables('nodeDnsLabelPrefix'),add(copyIndex(),2))]"
                 }
             }
         },
@@ -335,8 +340,8 @@
                 "count": "[variables('nodeInstanceCount')]"
             },
             "dependsOn": [
-                "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('nodePublicIPAddressName'),copyIndex()))]",
-                "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+                "nodePublicIPLoop",
+                "[variables('vnetResourceId')]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -375,7 +380,7 @@
             "location": "[variables('location')]",
             "dependsOn": [
                 "[variables('availabilitySetName')]",
-                "[concat('Microsoft.Network/networkInterfaces/', variables('masterNicName'))]"
+                "[variables('masterNicResourceId')]"
             ],
             "properties": {
                 "availabilitySet": {
@@ -438,7 +443,7 @@
             "location": "[variables('location')]",
             "apiVersion": "2019-07-01",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('masterName'))]"
+                "[variables('masterNodeResourceId')]"
             ],
             "tags": {
                 "displayName": "Dynatrace Managed Master"
@@ -456,7 +461,7 @@
                         "[concat(parameters('scriptHost'),'prepare_vm_disks.sh')]",
                         "[concat(parameters('scriptHost'),'installmanaged.sh')]"
                     ],
-                    "commandToExecute": "[concat('sh installmanaged.sh ', parameters('licenseKey'),' ',parameters('initialEnvironmentName'),' ',parameters('initialEnvironmentAdminFirstname'),' ',parameters('initialEnvironmentAdminLastname'),' ',parameters('initialEnvironmentAdminEmail'),' ',parameters('initialEnvironmentAdminSecret'),' 1 ',reference(variables('masterPublicIPAddressName')).dnsSettings.fqdn,' ',parameters('installerDownloadUrl'))]"
+                    "commandToExecute": "[concat('sh installmanaged.sh ', parameters('licenseKey'),' ',parameters('initialEnvironmentName'),' ',parameters('initialEnvironmentAdminFirstname'),' ',parameters('initialEnvironmentAdminLastname'),' ',parameters('initialEnvironmentAdminEmail'),' ',parameters('initialEnvironmentAdminSecret'),' ',parameters('installerDownloadUrl'))]"
                 }
             }
         },
@@ -473,7 +478,7 @@
             "location": "[variables('location')]",
             "dependsOn": [
                 "nodeNicLoop",
-                "[concat('Microsoft.Compute/virtualMachines/', variables('masterName'))]"
+                "[variables('masterNodeResourceId')]"
             ],
             "properties": {
                 "availabilitySet": {
@@ -541,7 +546,7 @@
                 "batchSize": 1
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',variables('nodeName'),copyIndex())]"
+                "clusterNodeLoop"
             ],
             "location": "[variables('location')]",
             "tags": {
@@ -560,7 +565,7 @@
                         "[concat(parameters('scriptHost'),'prepare_vm_disks.sh')]",
                         "[concat(parameters('scriptHost'),'installmanagednode.sh')]"
                     ],
-                    "commandToExecute": "[concat('sh installmanagednode.sh ', parameters('licenseKey'),' ',reference(variables('masterNicName')).ipConfigurations[0].properties.privateIPAddress, ' ',take(skip(split(reference(resourceId(resourceGroup().name,'Microsoft.Compute/virtualMachines/extensions',variables('masterName'),variables('masterExtensionName'))).instanceView.statuses[0].message,'\n'),2),1)[0],' ',parameters('initialEnvironmentAdminSecret'),' ',add(mul(add(copyIndex(),1),2),1),' ',reference(concat('Microsoft.Network/publicIPAddresses/',variables('nodePublicIPAddressName'),copyIndex())).dnsSettings.fqdn,' ',parameters('installerDownloadUrl'))]"
+                    "commandToExecute": "[concat('sh installmanagednode.sh ', parameters('licenseKey'),' ',reference(variables('masterNicName')).ipConfigurations[0].properties.privateIPAddress, ' ',take(skip(split(reference(resourceId('Microsoft.Compute/virtualMachines/extensions',variables('masterName'),variables('masterExtensionName'))).instanceView.statuses[0].message,'\n'),2),1)[0],' ',parameters('initialEnvironmentAdminSecret'),' ',add(copyIndex(),2),' ',parameters('installerDownloadUrl'))]"
                 }
             }
         }
