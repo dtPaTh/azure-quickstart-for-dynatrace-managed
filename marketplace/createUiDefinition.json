@@ -1,6 +1,6 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
-    "handler": "Microsoft.Compute.MultiVm",
+    "handler": "Microsoft.Azure.CreateUIDef",
     "version": "0.1.2-preview",
     "parameters": {
         "basics": [
@@ -63,9 +63,9 @@
                             {
                                 "name": "installerScriptHost",
                                 "type": "Microsoft.Common.TextBox",
-                                "label": "Installer script location",
+                                "label": "Installer scripts location",
                                 "defaultValue": "https://raw.githubusercontent.com/dtPaTh/azure-quickstart-for-dynatrace-managed/release-v1/custom-scripts/",
-                                "toolTip": "The installation is using custom scripts. Define your script host url.",
+                                "toolTip": "The installation is using multiple custom scripts (see https://github.com/dtPaTh/azure-quickstart-for-dynatrace-managed/tree/master/custom-scripts). Define your script host url if you want to use customized scripts.",
                                 "constraints": {
                                     "required": true,
                                     "regex": "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$",
@@ -116,7 +116,7 @@
                             {
                                 "name": "initialEnvironmentAdminEmail",
                                 "type": "Microsoft.Common.TextBox",
-                                "label": "Administrators Email",
+                                "label": "Administrators email",
                                 "toolTip": "Email of your environment administrator user.",
                                 "constraints": {
                                     "required": true,
@@ -127,15 +127,15 @@
                             {
                                 "name": "initialEnvironmentAdminSecret",
                                 "type": "Microsoft.Common.PasswordBox",
-                                "toolTip": "Password must be at least 6 characters long and have 3 out of the following: one number, one lower case, one upper case, or one special character",
+                                "toolTip": "Password must be at least 12 characters long and have 3 out of the following: one number, one lower case, one upper case, or one special character",
                                 "label": {
                                     "password": "Password",
                                     "confirmPassword": "Confirm password"
                                 },
                                 "constraints": {
                                     "required": true,
-                                    "regex": "^((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])|(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*])|(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*])|(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])).{6,72}$",
-                                    "validationMessage": "Password must be at least 6 characters long and have 3 out of the following: one number, one lower case, one upper case, or one special character"
+                                    "regex": "^((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])|(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*])|(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*])|(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])).{12,72}$",
+                                    "validationMessage": "Password must be at least 12 characters long and have 3 out of the following: one number, one lower case, one upper case, or one special character"
                                 }
                             }
                         ],
@@ -270,9 +270,7 @@
                             "sshPublicKey": "SSH Public Key for the Virtual Machine"
                         },
                         "constraints": {
-                            "required": true,
-                            "customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,}$",
-                            "customValidationMessage": "The password must contain at least 12 characters, with at least 1 letter and 1 number."
+                            "required": true
                         },
                         "options": {
                             "hideConfirmation": false,
@@ -344,21 +342,21 @@
                             {
                                 "name": "masterDNSPrefix",
                                 "type": "Microsoft.Common.TextBox",
-                                "defaultValue": "[concat('dt-master',string(rand(9999, 99999)))]",
-                                "label": "DNS prefix for master node",
-                                "toolTip": "DNS prefix for master node",
+                                "defaultValue": "[concat('dt-primary',string(rand(9999, 99999)))]",
+                                "label": "DNS prefix for primary node",
+                                "toolTip": "DNS prefix for primary node",
                                 "constraints": {
                                     "required": true,
                                     "regex": "^([a-z0-9-]{4,32})$",
-                                    "validationMessage": "DNS prefix for the master cluster node"
+                                    "validationMessage": "DNS prefix for the primary cluster node"
                                 }
                             },
                             {
                                 "name": "nodeDNSPrefix",
                                 "type": "Microsoft.Common.TextBox",
                                 "defaultValue": "[concat('dt-node',string(rand(9999, 99999)),'-')]",
-                                "label": "DNS prefix for sub nodes",
-                                "toolTip": "DNS prefix for sub nodes will be appended with the sequential node number.",
+                                "label": "DNS prefix for secondary nodes",
+                                "toolTip": "DNS prefix for secondary nodes will be appended with the sequential node number.",
                                 "constraints": {
                                     "required": true,
                                     "regex": "^([a-z0-9-]{4,32})$",
