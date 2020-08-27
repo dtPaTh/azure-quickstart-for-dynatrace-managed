@@ -48,3 +48,5 @@ fi
 
 log 'finished successful'
 echo "success"
+
+exit 0
