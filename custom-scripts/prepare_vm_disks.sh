@@ -105,6 +105,11 @@ get_next_mountpoint() {
     echo "${DATA_BASE}/disk${IDX}"
 }
 
+get_lun_based_mountpoint() {
+    LUN=$(lsblk -o HCTL,NAME | grep $(echo ${1} | grep -o "sd[a-z]") | grep -o "[0-9][[:space:]]")
+    echo "${DATA_BASE}/disk$(($LUN+1))"
+}
+
 add_to_fstab() {
     UUID=${1}
     MOUNTPOINT=${2}
@@ -169,7 +174,7 @@ scan_partition_format()
 	        echo "Creating filesystem on ${PARTITION}."
 	        mkfs -j -t ext4 ${PARTITION}
 	    fi
-	    MOUNTPOINT=$(get_next_mountpoint)
+	    MOUNTPOINT=$(get_lun_based_mountpoint ${DISK})
 	    echo "Next mount point appears to be ${MOUNTPOINT}"
 	    [ -d "${MOUNTPOINT}" ] || mkdir -p "${MOUNTPOINT}"
 	    read UUID FS_TYPE < <(blkid -u filesystem ${PARTITION}|awk -F "[= ]" '{print $3" "$5}'|tr -d "\"")
