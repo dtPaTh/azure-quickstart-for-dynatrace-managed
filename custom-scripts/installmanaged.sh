@@ -56,3 +56,5 @@ else
     log 'finished successfully'
     echo "$token" #write token to std output, so it can be passed over to node installers
 fi
+
+exit 0
