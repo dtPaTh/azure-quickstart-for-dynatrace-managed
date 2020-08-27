@@ -234,7 +234,7 @@
                     {
                         "name": "OneAgent_rule",
                         "properties": {
-                            "description": "Allow https",
+                            "description": "Allow OneAgent communication",
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
                             "destinationPortRange": "8443",
