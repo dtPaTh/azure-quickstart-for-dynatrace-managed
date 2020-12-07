@@ -56,7 +56,7 @@
                                 "toolTip": "The installer download url is provided within the email with license details.",
                                 "constraints": {
                                     "required": true,
-                                    "regex": "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$",
+                                    "regex": "^http(s)?:\\/\\/([a-zA-Z0-9@:%._\\+~#=]{2,256}\\.)*[a-z]{2,6}\\b[-a-zA-Z0-9@:%_\\+.~#?&\\//=]*$",
                                     "validationMessage": "Please provide a valid url"
                                 }
                             },
@@ -68,7 +68,7 @@
                                 "toolTip": "The installation is using multiple custom scripts (see https://github.com/dtPaTh/azure-quickstart-for-dynatrace-managed/tree/master/custom-scripts). Define your script host url if you want to use customized scripts.",
                                 "constraints": {
                                     "required": true,
-                                    "regex": "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$",
+                                    "regex": "^http(s)?:\\/\\/([a-zA-Z0-9@:%._\\+~#=]{2,256}\\.)*[a-z]{2,6}\\b[-a-zA-Z0-9@:%_\\+.~#?&\\//=]*$",
                                     "validationMessage": "Please provide a valid url. e.g. https://mycompanyscriptartifacts.com/"
                                 }
                             }
