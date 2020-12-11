@@ -384,14 +384,16 @@
 			"initialEnvironmentAdminSecret":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminSecret]",
             
             "vmSize":"[steps('clusterNodeSetup').vmSize]",
-            "sizeOfDataDiskInGB":"[steps('clusterNodeSetup').sizeOfDataDiskInGB]",
-            "sizeOfTransactionDataDiskInGB":"[steps('clusterNodeSetup').sizeOfTransactionDataDiskInGB]",
-            "sizeOfLongTermMetricsDiskInGB":"[steps('clusterNodeSetup').sizeOfLongTermMetricsDiskInGB]",
-			"sizeOfElasticSearchDiskInGB":"[steps('clusterNodeSetup').sizeOfElasticSearchDiskInGB]",
-            "totalNodeInstanceCount":"[steps('clusterNodeSetup').totalNodeInstanceCount]",
+            "sizeOfDataDiskInGB":"[parse(steps('clusterNodeSetup').sizeOfDataDiskInGB)]",
+            "sizeOfTransactionDataDiskInGB":"[parse(steps('clusterNodeSetup').sizeOfTransactionDataDiskInGB)]",
+            "sizeOfLongTermMetricsDiskInGB":"[parse(steps('clusterNodeSetup').sizeOfLongTermMetricsDiskInGB)]",
+			"sizeOfElasticSearchDiskInGB":"[parse(steps('clusterNodeSetup').sizeOfElasticSearchDiskInGB)]",
+            "totalNodeInstanceCount":"[int(parse(steps('clusterNodeSetup').totalNodeInstanceCount))]",
             
-			"adminUsername":"[steps('clusterNodeAccess').adminUsername]",
-			"adminPassword":"[steps('clusterNodeAccess').adminPassword]",
+            "adminUsername":"[steps('clusterNodeAccess').adminUsername]",
+            "adminAuthenticationType": "[steps('clusterNodeAccess').adminPassword.authenticationType]",
+            "adminPassword":"[steps('clusterNodeAccess').adminPassword.password]",
+            "adminSshPublicKey":"[steps('clusterNodeAccess').adminPassword.sshPublicKey]",
 
 			"virtualNetworkNewOrExisting": "[steps('networkConfig').vnet.virtualNetwork.newOrExisting]",
 			"virtualNetworkName": "[steps('networkConfig').vnet.virtualNetwork.name]",

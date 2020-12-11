@@ -95,11 +95,22 @@
                 "description": "SSH username"
             }
         },
+        "adminAuthenticationType": {
+            "type": "string",
+            "allowedValues": ["password","sshPublicKey"]
+        },
         "adminPassword": {
             "type": "securestring",
             "minLength": 15,
             "metadata": {
                 "description": "SSH password"
+            }
+        },
+        "adminSshPublicKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "SSH RSA public key file as a string. Not used if authenticationType of password."
             }
         },
         "masterDNSPrefix": {
@@ -194,7 +205,20 @@
         "nodeNicName": "node-nic_",
         "nodeDnsLabelPrefix": "[concat(parameters('nodeDNSPrefix'),'-')]",
         "nodePublicIPAddressName": "node-public-ip_",
-        "nodeExtensionName": "dynatrace-node-setup_"
+        "nodeExtensionName": "dynatrace-node-setup_",
+
+        "sshKeyPath": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+        "linuxConfiguration": {
+            "disablePasswordAuthentication": "true",
+            "ssh": {
+                "publicKeys": [
+                {
+                    "path": "[variables('sshKeyPath')]",
+                    "keyData": "[parameters('adminSshPublicKey')]"
+                }
+                ]
+            }
+        }
     },
     "resources": [
         {
@@ -392,7 +416,8 @@
                 "osProfile": {
                     "computerName": "[variables('masterName')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]"
+                    "adminPassword": "[parameters('adminPassword')]",
+                     "linuxConfiguration": "[if(equals(parameters('adminAuthenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -490,7 +515,8 @@
                 "osProfile": {
                     "computerName": "[concat(variables('nodeName'), copyindex())]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]"
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "linuxConfiguration": "[if(equals(parameters('adminAuthenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
                 },
                 "storageProfile": {
                     "imageReference": {
