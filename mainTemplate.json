@@ -97,9 +97,8 @@
         },
         "adminPassword": {
             "type": "securestring",
-            "minLength": 15,
             "metadata": {
-                "description": "SSH password"
+                "description": "SSH password/key"
             }
         },
         "masterDNSPrefix": {

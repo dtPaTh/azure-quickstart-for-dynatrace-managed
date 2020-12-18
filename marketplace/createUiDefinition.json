@@ -3,10 +3,8 @@
     "handler": "Microsoft.Azure.CreateUIDef",
     "version": "0.1.2-preview",
     "parameters": {
-        "basics": [
-        ],
-        "steps": [
-            {
+        "basics": [],
+        "steps": [{
                 "name": "dtClusterSetup",
                 "label": "Dynatrace Cluster Configuration",
                 "subLabel": {
@@ -14,8 +12,7 @@
                     "postValidation": "Done"
                 },
                 "bladeTitle": "Dynatrace Cluster Config",
-                "elements": [
-                    {
+                "elements": [{
                         "name": "clusterInstallInfo",
                         "type": "Microsoft.Common.InfoBox",
                         "visible": true,
@@ -29,27 +26,24 @@
                         "name": "license",
                         "type": "Microsoft.Common.Section",
                         "label": "Dynatrace License",
-                        "elements": [ 
-                            {
-                                "name": "licenseKey",
-                                "type": "Microsoft.Common.TextBox",
-                                "label": "License key",
-                                "toolTip": "The license key is provided within the email with license details.",
-                                "constraints": {
-                                    "required": true,
-                                    "regex": "^(\\w{12,18})$",
-                                    "validationMessage": "Invalid license key"
-                                }
+                        "elements": [{
+                            "name": "licenseKey",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "License key",
+                            "toolTip": "The license key is provided within the email with license details.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "^(\\w{12,18})$",
+                                "validationMessage": "Invalid license key"
                             }
-                        ],
+                        }],
                         "visible": true
                     },
                     {
                         "name": "installer",
                         "type": "Microsoft.Common.Section",
                         "label": "Installer Configuration",
-                        "elements": [
-                            {
+                        "elements": [{
                                 "name": "installerDownloadUrl",
                                 "type": "Microsoft.Common.TextBox",
                                 "label": "Installer download url",
@@ -79,8 +73,7 @@
                         "name": "initialEnvironment",
                         "type": "Microsoft.Common.Section",
                         "label": "Initial Environment Configuration",
-                        "elements": [
-                            {
+                        "elements": [{
                                 "name": "initialEnvironmentName",
                                 "type": "Microsoft.Common.TextBox",
                                 "label": "Name",
@@ -120,30 +113,30 @@
                                 "toolTip": "Email of your environment administrator user.",
                                 "constraints": {
                                     "required": true,
-                                    "regex":"^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$",
+                                    "regex": "^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$",
                                     "validationMessage": "Please provide a valid email address"
                                 }
                             },
                             {
                                 "name": "initialEnvironmentAdminSecret",
                                 "type": "Microsoft.Common.PasswordBox",
-                                "toolTip": "Password must be at least 12 characters long and have 3 out of the following: one number, one lower case, one upper case, or one special character",
+                                "toolTip": "Password must be at least 15 characters long and have 3 out of the following: one number, one lower case, one upper case, or one special character",
                                 "label": {
                                     "password": "Password",
                                     "confirmPassword": "Confirm password"
                                 },
                                 "constraints": {
                                     "required": true,
-                                    "regex": "^((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])|(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*])|(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*])|(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])).{12,72}$",
-                                    "validationMessage": "Password must be at least 12 characters long and have 3 out of the following: one number, one lower case, one upper case, or one special character"
+                                    "regex": "^((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])|(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&*])|(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*])|(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])).{15,72}$",
+                                    "validationMessage": "Password must be at least 15 characters long and have 3 out of the following: one number, one lower case, one upper case, or one special character"
                                 }
                             }
                         ],
                         "visible": true
                     }
                 ]
-			},
-			{
+            },
+            {
                 "name": "clusterNodeSetup",
                 "label": "Cluster Sizing",
                 "subLabel": {
@@ -151,8 +144,7 @@
                     "postValidation": "Done"
                 },
                 "bladeTitle": "Cluster Sizing",
-                "elements": [
-                    {
+                "elements": [{
                         "name": "clusterRequirementsInfo",
                         "type": "Microsoft.Common.InfoBox",
                         "visible": true,
@@ -233,7 +225,7 @@
                         }
                     }
                 ]
-            },			
+            },
             {
                 "name": "clusterNodeAccess",
                 "label": "Cluster remote-access",
@@ -242,8 +234,7 @@
                     "postValidation": "Done"
                 },
                 "bladeTitle": "Cluster remote-access",
-                "elements": [
-                    {
+                "elements": [{
                         "name": "adminUsername",
                         "type": "Microsoft.Compute.UserNameTextBox",
                         "label": "Username",
@@ -278,9 +269,9 @@
                         },
                         "osPlatform": "Linux"
                     }
-                
+
                 ]
-            },	
+            },
             {
                 "name": "networkConfig",
                 "label": "Network settings",
@@ -289,57 +280,53 @@
                     "postValidation": "Done"
                 },
                 "bladeTitle": "Network settings",
-                "elements": [
-                    {
+                "elements": [{
                         "name": "vnet",
                         "type": "Microsoft.Common.Section",
                         "label": "Virtual Network",
-                        "elements": [
-                            {
-                                "name": "virtualNetwork",
-                                "type": "Microsoft.Network.VirtualNetworkCombo",
-                                "label": {
-                                    "virtualNetwork": "Virtual network",
-                                    "subnets": "Subnets"
-                                },
-                                "toolTip": {
-                                    "virtualNetwork": "Virtual network",
-                                    "subnets": "Subnets"
-                                },
-                                "defaultValue": {
-                                    "name": "[concat('vnet-',string(rand(101,999)))]",
-                                    "addressPrefixSize": "/16"
-                                },
-                                "constraints": {
-                                    "minAddressPrefixSize": "/29"
-                                },
-                                "options": {
-                                    "hideExisting": false
-                                },
-                                "subnets": {
-                                    "subnet0": {
-                                        "label": "Subnet",
-                                        "defaultValue": {
-                                            "name": "subnet-1",
-                                            "addressPrefixSize": "/26"
-                                        },
-                                        "constraints": {
-                                            "minAddressPrefixSize": "/29",
-                                            "minAddressCount": 4,
-                                            "requireContiguousAddresses": true
-                                        }
+                        "elements": [{
+                            "name": "virtualNetwork",
+                            "type": "Microsoft.Network.VirtualNetworkCombo",
+                            "label": {
+                                "virtualNetwork": "Virtual network",
+                                "subnets": "Subnets"
+                            },
+                            "toolTip": {
+                                "virtualNetwork": "Virtual network",
+                                "subnets": "Subnets"
+                            },
+                            "defaultValue": {
+                                "name": "[concat('vnet-',string(rand(101,999)))]",
+                                "addressPrefixSize": "/16"
+                            },
+                            "constraints": {
+                                "minAddressPrefixSize": "/29"
+                            },
+                            "options": {
+                                "hideExisting": false
+                            },
+                            "subnets": {
+                                "subnet0": {
+                                    "label": "Subnet",
+                                    "defaultValue": {
+                                        "name": "subnet-1",
+                                        "addressPrefixSize": "/26"
+                                    },
+                                    "constraints": {
+                                        "minAddressPrefixSize": "/29",
+                                        "minAddressCount": 4,
+                                        "requireContiguousAddresses": true
                                     }
                                 }
                             }
-                        ],
+                        }],
                         "visible": true
                     },
                     {
                         "name": "dnsPrefix",
                         "type": "Microsoft.Common.Section",
                         "label": "DNS Settings",
-                        "elements": [
-                            {
+                        "elements": [{
                                 "name": "masterDNSPrefix",
                                 "type": "Microsoft.Common.TextBox",
                                 "defaultValue": "[concat('dt-primary',string(rand(9999, 99999)))]",
@@ -370,39 +357,39 @@
             }
         ],
         "outputs": {
-            "location":"[location()]",
+            "location": "[location()]",
 
-            "licenseKey":"[steps('dtClusterSetup').license.licenseKey]",
-            
-			"installerDownloadUrl":"[steps('dtClusterSetup').installer.installerDownloadUrl]",
-			"scriptHost":"[steps('dtClusterSetup').installer.installerScriptHost]",
-			
-			"initialEnvironmentName":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentName]",
-			"initialEnvironmentAdminFirstname":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminFirstname]",
-			"initialEnvironmentAdminLastname":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminLastname]",
-			"initialEnvironmentAdminEmail":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminEmail]",
-			"initialEnvironmentAdminSecret":"[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminSecret]",
-            
-            "vmSize":"[steps('clusterNodeSetup').vmSize]",
-            "sizeOfDataDiskInGB":"[steps('clusterNodeSetup').sizeOfDataDiskInGB]",
-            "sizeOfTransactionDataDiskInGB":"[steps('clusterNodeSetup').sizeOfTransactionDataDiskInGB]",
-            "sizeOfLongTermMetricsDiskInGB":"[steps('clusterNodeSetup').sizeOfLongTermMetricsDiskInGB]",
-			"sizeOfElasticSearchDiskInGB":"[steps('clusterNodeSetup').sizeOfElasticSearchDiskInGB]",
-            "totalNodeInstanceCount":"[steps('clusterNodeSetup').totalNodeInstanceCount]",
-            
-			"adminUsername":"[steps('clusterNodeAccess').adminUsername]",
-			"adminPassword":"[steps('clusterNodeAccess').adminPassword]",
+            "licenseKey": "[steps('dtClusterSetup').license.licenseKey]",
 
-			"virtualNetworkNewOrExisting": "[steps('networkConfig').vnet.virtualNetwork.newOrExisting]",
-			"virtualNetworkName": "[steps('networkConfig').vnet.virtualNetwork.name]",
+            "installerDownloadUrl": "[steps('dtClusterSetup').installer.installerDownloadUrl]",
+            "scriptHost": "[steps('dtClusterSetup').installer.installerScriptHost]",
+
+            "initialEnvironmentName": "[steps('dtClusterSetup').initialEnvironment.initialEnvironmentName]",
+            "initialEnvironmentAdminFirstname": "[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminFirstname]",
+            "initialEnvironmentAdminLastname": "[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminLastname]",
+            "initialEnvironmentAdminEmail": "[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminEmail]",
+            "initialEnvironmentAdminSecret": "[steps('dtClusterSetup').initialEnvironment.initialEnvironmentAdminSecret]",
+
+            "vmSize": "[steps('clusterNodeSetup').vmSize]",
+            "sizeOfDataDiskInGB": "[steps('clusterNodeSetup').sizeOfDataDiskInGB]",
+            "sizeOfTransactionDataDiskInGB": "[steps('clusterNodeSetup').sizeOfTransactionDataDiskInGB]",
+            "sizeOfLongTermMetricsDiskInGB": "[steps('clusterNodeSetup').sizeOfLongTermMetricsDiskInGB]",
+            "sizeOfElasticSearchDiskInGB": "[steps('clusterNodeSetup').sizeOfElasticSearchDiskInGB]",
+            "totalNodeInstanceCount": "[steps('clusterNodeSetup').totalNodeInstanceCount]",
+
+            "adminUsername": "[steps('clusterNodeAccess').adminUsername]",
+            "adminPassword": "[steps('clusterNodeAccess').adminPassword]",
+
+            "virtualNetworkNewOrExisting": "[steps('networkConfig').vnet.virtualNetwork.newOrExisting]",
+            "virtualNetworkName": "[steps('networkConfig').vnet.virtualNetwork.name]",
             "virtualNetworkResourceGroupName": "[steps('networkConfig').vnet.virtualNetwork.resourceGroup]",
             "vnetAddressPrefix": "[steps('networkConfig').vnet.virtualNetwork.addressPrefix]",
-			
-			"subnetName": "[steps('networkConfig').vnet.virtualNetwork.subnets.subnet0.name]",
+
+            "subnetName": "[steps('networkConfig').vnet.virtualNetwork.subnets.subnet0.name]",
             "subnetAddressPrefix": "[steps('networkConfig').vnet.virtualNetwork.subnets.subnet0.addressPrefix]",
-            
+
             "masterDNSPrefix": "[steps('networkConfig').dnsPrefix.masterDNSPrefix]",
-			"nodeDNSPrefix": "[steps('networkConfig').dnsPrefix.nodeDNSPrefix]"
+            "nodeDNSPrefix": "[steps('networkConfig').dnsPrefix.nodeDNSPrefix]"
         }
     }
 }
