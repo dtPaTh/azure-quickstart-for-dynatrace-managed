@@ -378,7 +378,9 @@
             "totalNodeInstanceCount": "[steps('clusterNodeSetup').totalNodeInstanceCount]",
 
             "adminUsername": "[steps('clusterNodeAccess').adminUsername]",
+            "adminAuthenticationType": "[steps('clusterNodeAccess').adminPassword.authenticationType]",
             "adminPassword": "[steps('clusterNodeAccess').adminPassword]",
+            "adminSshPublicKey": "[steps('clusterNodeAccess').adminPassword.sshPublicKey]",
 
             "virtualNetworkNewOrExisting": "[steps('networkConfig').vnet.virtualNetwork.newOrExisting]",
             "virtualNetworkName": "[steps('networkConfig').vnet.virtualNetwork.name]",
