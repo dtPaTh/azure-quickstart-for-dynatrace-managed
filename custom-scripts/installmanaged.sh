@@ -22,7 +22,7 @@ log 'prepare datadisks'
 sudo bash prepare_vm_disks.sh >> $LOGFILE
 
 log 'download latest installer...'
-if curl --fail --silent --show-error "$installerDownloadUrl" --output /tmp/dt-mgd-install.sh ; then
+if curl --location --fail --silent --show-error "$installerDownloadUrl" --output /tmp/dt-mgd-install.sh ; then
     log 'done.'
 else
     log 'failed.'
@@ -40,11 +40,11 @@ then
     log "[WARNING] Couldn't resolve public IP, skip config to define endpoint for webui"
 else
     log 'try set nodes public ip'
-    curl --fail --silent -X PUT --insecure -u "admin":"$initialEnvironmentAdminSecret" "https://127.0.0.1:8021/api/v1.0/onpremise/endpoint/publicIp/domain/1" -d "$publicIp" -H "Content-Type: application/json" 1>> $LOGFILE;
+    curl --fail --silent --insecure --user "admin":"$initialEnvironmentAdminSecret"  -X PUT "https://127.0.0.1:8021/api/v1.0/onpremise/endpoint/publicIp/domain/1" -d "$publicIp" -H "Content-Type: application/json" 1>> $LOGFILE;
 fi
 
 log 'get api-token'
-token=$(wget --http-user=admin --http-password="$initialEnvironmentAdminSecret"  -q https://127.0.0.1:8021/api/v1.0/onpremise/tokens/ --no-check-certificate -O - | grep -o 'tokenId":".[^"]*' | cut -b11- | head -n1)
+token=$(curl --fail --silent --insecure --user admin:"$initialEnvironmentAdminSecret" "https://127.0.0.1:8021/api/v1.0/onpremise/tokens/"  | grep -o 'tokenId":".[^"]*' | cut -b11- | head -n1)
 
 if [ -z "$token" ] 
 then
